@@ -1,0 +1,9 @@
+result
+preproc.cpp
+*.vim
+.envrc
+.direnv/*
+.cache/*
+build/*
+src/*
+CMakeLists.txt
