@@ -29,8 +29,8 @@
 
           buildPhase = "true";
           installPhase = ''
-              mkdir -p $out/include/ml
-              cp ${self}/include/* $out/include/ml
+              mkdir -p $out/include
+              cp -r ${self}/include/* $out/include/
           '';
 
         };

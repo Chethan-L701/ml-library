@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+namespace ml {
 namespace matrix {
 template <typename T> class Matrix2D {
     struct {
@@ -52,4 +53,6 @@ template <typename T> Matrix2D<T> transpose(const Matrix2D<T> &t);
 
 }; // namespace matrix
 
-#include "matrix.tpp"
+} // namespace ml
+
+#include "ml/matrix/matrix2d.tpp"

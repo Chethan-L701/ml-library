@@ -1,11 +1,14 @@
 #pragma once
 
-#include "matrix.hpp"
+#include "ml/matrix/matrix2d.hpp"
+
 #include <cstddef>
 #include <functional>
 #include <print>
 #include <stdexcept>
 #include <vector>
+
+namespace ml {
 
 namespace matrix {
 template <typename T> Matrix2D<T>::Matrix2D(size_t rows, size_t cols) {
@@ -242,3 +245,4 @@ template <typename T> Matrix2D<T> transpose(const Matrix2D<T> &t) {
     return tp;
 }
 } // namespace matrix
+} // namespace ml
