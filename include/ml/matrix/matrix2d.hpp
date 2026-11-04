@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <cstddef>
 #include <functional>
 #include <utility>
@@ -7,7 +8,9 @@
 
 namespace ml {
 namespace matrix {
-template <typename T> class Matrix2D {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+class Matrix2D {
     struct {
         size_t rows;
         size_t cols;
@@ -26,11 +29,12 @@ template <typename T> class Matrix2D {
 
     T &operator[](size_t, size_t);
     const T &operator[](size_t, size_t) const;
+    bool operator==(const Matrix2D<T>&);
 
     Matrix2D row(size_t r);
     Matrix2D column(size_t c);
-    std::pair<Matrix2D<T>, Matrix2D<T>> split_col(size_t c);
-    std::pair<Matrix2D<T>, Matrix2D<T>> split_row(size_t r);
+    std::pair<Matrix2D<T>, Matrix2D<T>> split_col(size_t c) const;
+    std::pair<Matrix2D<T>, Matrix2D<T>> split_row(size_t r) const;
 
     Matrix2D &apply(std::function<T(T)>);
     Matrix2D &fill(std::function<T()>);
@@ -55,4 +59,4 @@ template <typename T> Matrix2D<T> transpose(const Matrix2D<T> &t);
 
 } // namespace ml
 
-#include "ml/matrix/matrix2d.tpp"
+#include <ml/matrix/matrix2d.tpp>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ml/matrix/matrix2d.hpp"
+#include <ml/matrix/matrix2d.hpp>
 
 #include <cstddef>
 #include <functional>
@@ -11,12 +11,16 @@
 namespace ml {
 
 namespace matrix {
-template <typename T> Matrix2D<T>::Matrix2D(size_t rows, size_t cols) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T>::Matrix2D(size_t rows, size_t cols) {
     m = {.rows = rows, .cols = cols};
     m.elements.resize(rows * cols);
 }
 
-template <typename T> Matrix2D<T>::Matrix2D(std::vector<std::vector<T>> mat) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T>::Matrix2D(std::vector<std::vector<T>> mat) {
     m.rows = mat.size();
     m.cols = mat[0].size();
     for (std::vector<T> &v : mat) {
@@ -35,10 +39,35 @@ template <typename T> Matrix2D<T>::Matrix2D(std::vector<std::vector<T>> mat) {
     }
 }
 
-template <typename T> T &Matrix2D<T>::operator[](size_t r, size_t c) { return m.elements[r * m.cols + c]; }
-template <typename T> const T &Matrix2D<T>::operator[](size_t r, size_t c) const { return m.elements[r * m.cols + c]; }
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+T &Matrix2D<T>::operator[](size_t r, size_t c) {
+    return m.elements[r * m.cols + c];
+}
 
-template <typename T> Matrix2D<T> Matrix2D<T>::row(size_t r) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+const T &Matrix2D<T>::operator[](size_t r, size_t c) const {
+    return m.elements[r * m.cols + c];
+}
+
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+bool Matrix2D<T>::operator==(const Matrix2D<T> &other) {
+    if ((*this).size() != other.size()) {
+        return false;
+    }
+    for (size_t i{}; i < m.elements.size(); ++i) {
+        if (m.elements[i] != other.m.elements[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> Matrix2D<T>::row(size_t r) {
     if (r > m.rows) {
         throw std::runtime_error("ERROR : Exceed the number the number of rows in the matrix.");
     }
@@ -49,7 +78,9 @@ template <typename T> Matrix2D<T> Matrix2D<T>::row(size_t r) {
     return row;
 }
 
-template <typename T> Matrix2D<T> Matrix2D<T>::column(size_t c) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> Matrix2D<T>::column(size_t c) {
     if (c > m.cols) {
         throw std::runtime_error("ERROR : Exceed the number the number of columns in the matrix.");
     }
@@ -61,7 +92,9 @@ template <typename T> Matrix2D<T> Matrix2D<T>::column(size_t c) {
     return column;
 }
 
-template <typename T> std::pair<Matrix2D<T>, Matrix2D<T>> Matrix2D<T>::split_col(size_t c) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+std::pair<Matrix2D<T>, Matrix2D<T>> Matrix2D<T>::split_col(size_t c) const {
     if (c > m.cols) {
         throw std::runtime_error("ERROR : Exceeded the number of columns in the matrix.");
     }
@@ -82,7 +115,9 @@ template <typename T> std::pair<Matrix2D<T>, Matrix2D<T>> Matrix2D<T>::split_col
     }
     return {p, q};
 }
-template <typename T> std::pair<Matrix2D<T>, Matrix2D<T>> Matrix2D<T>::split_row(size_t r) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+std::pair<Matrix2D<T>, Matrix2D<T>> Matrix2D<T>::split_row(size_t r) const {
     if (r > m.rows) {
         throw std::runtime_error("ERROR : Exceeded the number of row in the matrix.");
     }
@@ -104,12 +139,16 @@ template <typename T> std::pair<Matrix2D<T>, Matrix2D<T>> Matrix2D<T>::split_row
     return {p, q};
 }
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::fill(T val) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::fill(T val) {
     this->fill([val]() -> T { return val; });
     return (*this);
 }
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::fill(std::function<T()> f) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::fill(std::function<T()> f) {
     for (size_t i{}; i < m.rows; ++i) {
         for (size_t j{}; j < m.cols; ++j) {
             (*this)[i, j] = f();
@@ -118,46 +157,58 @@ template <typename T> Matrix2D<T> &Matrix2D<T>::fill(std::function<T()> f) {
     return (*this);
 }
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::apply(std::function<T(T)> f) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::apply(std::function<T(T)> f) {
     for (auto &i : m.elements) {
         i = f(i);
     }
     return (*this);
 }
 
-template <typename T> std::pair<size_t, size_t> Matrix2D<T>::size() const { return {m.rows, m.cols}; }
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+std::pair<size_t, size_t> Matrix2D<T>::size() const {
+    return {m.rows, m.cols};
+}
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::transpose() {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::transpose() {
     (*this) = std::move(matrix::transpose(*this));
     return (*this);
 };
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::add(const Matrix2D<T> &b) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::add(const Matrix2D<T> &b) {
     (*this) = std::move(matrix::add(*this, b));
     return (*this);
 };
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::subtract(const Matrix2D<T> &b) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::subtract(const Matrix2D<T> &b) {
     (*this) = std::move(matrix::subtract(*this, b));
     return (*this);
 };
 
-template <typename T> Matrix2D<T> &Matrix2D<T>::multiply(const Matrix2D<T> &b) {
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+Matrix2D<T> &Matrix2D<T>::multiply(const Matrix2D<T> &b) {
     (*this) = std::move(matrix::multiply(*this, b));
     return (*this);
 };
 
-template <typename T> void Matrix2D<T>::print() const {
-    std::println("---------------------------------------------------------------"
-                 "-----------------");
+template <typename T>
+    requires std::integral<T> || std::floating_point<T>
+void Matrix2D<T>::print() const {
     for (int i{}; i < m.rows; ++i) {
         for (int j{}; j < m.cols; ++j) {
-            std::print("{}\t", (*this)[i, j]);
+            std::print("{:12}", (*this)[i, j]);
         }
         std::println();
     }
-    std::println("---------------------------------------------------------------"
-                 "-----------------");
 }
 
 template <typename T> Matrix2D<T> identity(size_t size) {
